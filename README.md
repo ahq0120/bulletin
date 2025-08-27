@@ -1,7 +1,5 @@
 # Bulletin
 
----
-
 ## 功能（Features）
 
 - 公告 CRUD：標題、公布者（固定 `Administrator`）、公布日期、截止日期、內容（HTML）
