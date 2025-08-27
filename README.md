@@ -52,7 +52,7 @@ RESTful（Route::resource('notices', NoticeController::class)）
 
 ### `notices` 表
 
-| 欄位           | 型別               | 條件／預設                                  | 說明             |
+| 欄位           | 型別               | 條件                                     | 說明             |
 |----------------|--------------------|---------------------------------------------|------------------|
 | `id`           | BIGINT UNSIGNED    | **PK**, **AI**                              | 主鍵             |
 | `title`        | VARCHAR(200)       | **NOT NULL**                                 | 標題             |
