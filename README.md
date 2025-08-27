@@ -20,18 +20,31 @@
 
 ## 專案結構
 
+```text
 app/
-  Http/Controllers/
-    NoticeController.php      # 列表/搜尋/分頁/CRUD
-    UploadController.php      # CKEditor 圖片/附件上傳
-  Models/Notice.php
+ ├─ Http/
+ │   └─ Controllers/
+ │       ├─ NoticeController.php        # 列表 / 搜尋 / 分頁 / CRUD
+ │       └─ UploadController.php        # CKEditor 圖片 / 附件上傳
+ └─ Models/
+     └─ Notice.php
+
 database/
-  migrations/*_create_notices_table.php
-resources/views/notices/
-  index.blade.php             # 列表 + 搜尋 + 分頁（10 筆/頁）
-  _form.blade.php             # 表單 + CKEditor + 上傳附件並插入連結
-  create.blade.php / edit.blade.php / show.blade.php
-routes/web.php                # RESTful 路由 + 上傳端點
+ └─ migrations/
+     └─ ****_create_notices_table.php
+
+resources/
+ └─ views/
+     └─ notices/
+         ├─ index.blade.php             # 列表 + 搜尋 + 分頁（10 筆/頁）
+         ├─ _form.blade.php             # 表單 + CKEditor + 上傳附件並插入連結
+         ├─ create.blade.php
+         ├─ edit.blade.php
+         └─ show.blade.php
+
+routes/
+ └─ web.php                              # RESTful 路由 + 上傳端點
+```
 
 ---
 
