@@ -2,10 +2,9 @@
 
 ## 功能（Features）
 
-- 公告 CRUD：標題、公布者（固定 `Administrator`）、公布日期、截止日期、內容（HTML）
-- 富文字編輯：CKEditor 5（Classic build）
-- 圖片／附件上傳：前端 POST 至 `/uploads/ck`，回傳 URL 直接插入 CKEditor
-- 列表分頁：每頁 10 筆（`?page=`）
+- 公告：標題、發佈者、發佈日期、截止日期、內容
+- 圖片／附件上傳
+- 列表分頁：每頁 10 筆
 - 簡易搜尋：`?q=`（針對標題 / 公布者模糊查詢）
 - 媒體公開路徑：`/storage/notice-uploads/YYYY/MM/...`（相對路徑，避免入口網域/埠號變更後失效）
 
