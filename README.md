@@ -50,13 +50,16 @@ RESTful（Route::resource('notices', NoticeController::class)）
 
 ## 資料庫
 
-notices
-- id            BIGINT UNSIGNED  PK AI        # 主鍵
-- title         VARCHAR(200)     NOT NULL     # 標題
-- author        VARCHAR(100)     NOT NULL     DEFAULT 'Administrator'  # 發布者
-- published_at  DATE             NOT NULL     # 公布日期
-- due_date      DATE             NULL         # 截止日期
-- content       LONGTEXT         NULL         # CKEditor HTML
-- created_at    TIMESTAMP        NULL
-- updated_at    TIMESTAMP        NULL
+### `notices` 表
+
+| 欄位           | 型別               | 條件／預設                                  | 說明             |
+|----------------|--------------------|---------------------------------------------|------------------|
+| `id`           | BIGINT UNSIGNED    | **PK**, **AI**                              | 主鍵             |
+| `title`        | VARCHAR(200)       | **NOT NULL**                                 | 標題             |
+| `author`       | VARCHAR(100)       | **NOT NULL**, `DEFAULT 'Administrator'`     | 發布者           |
+| `published_at` | DATE               | **NOT NULL**                                 | 公布日期         |
+| `due_date`     | DATE               | NULL                                         | 截止日期         |
+| `content`      | LONGTEXT           | NULL                                         | CKEditor HTML    |
+| `created_at`   | TIMESTAMP          | NULL                                         | 建立時間         |
+| `updated_at`   | TIMESTAMP          | NULL                                         | 更新時間         |
 
