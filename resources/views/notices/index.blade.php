@@ -3,6 +3,7 @@
 @section('content')
 <div class="card shadow-sm">
   <div class="card-body">
+    {{-- 搜尋（可選） --}}
     <form class="row gy-2 gx-2 mb-3" method="get">
       <div class="col-auto">
         <input name="q" value="{{ $q }}" class="form-control" placeholder="搜尋標題/公布者">
@@ -28,18 +29,22 @@
         <tbody>
         @forelse($notices as $n)
           <tr>
-            <td><a href="{{ route('notices.show',$n) }}">{{ $n->title }}</a></td>
+            <td><a href="{{ route('notices.show', $n, false) }}">{{ $n->title }}</a></td>
             <td class="text-center">{{ optional($n->published_at)->format('Y-m-d') }}</td>
             <td class="text-center">{{ optional($n->due_date)->format('Y-m-d') ?? '—' }}</td>
             <td class="text-center">{{ $n->author }}</td>
             <td class="text-center">
-              <a class="btn btn-sm btn-primary" href="{{ route('notices.edit',$n) }}">修改</a>
+              <a class="btn btn-sm btn-primary" href="{{ route('notices.edit', $n, false) }}">修改</a>
             </td>
             <td class="text-center">
-              <form method="post" action="{{ route('notices.destroy',$n) }}" onsubmit="return confirm('確認刪除這筆公告？')">
-                @csrf @method('DELETE')
-                <button class="btn btn-sm btn-danger">刪除</button>
-              </form>
+              <form method="post"
+      		action="{{ route('notices.destroy', $n, false) }}"
+      		style="display:inline"
+      		onsubmit="return confirm('確認刪除這筆公告？')">
+  	 	@csrf
+  		@method('DELETE')
+  		<button type="submit" class="btn btn-sm btn-danger">刪除</button>
+	     </form>
             </td>
           </tr>
         @empty
@@ -50,8 +55,8 @@
     </div>
 
     <div class="d-flex justify-content-between align-items-center">
-      <div>{{ $notices->links() }}</div>
-      <a href="{{ route('notices.create') }}" class="btn btn-success">新增</a>
+      <div>{{ $notices->onEachSide(1)->links('pagination::bootstrap-5') }}</div>
+      <a href="{{ route('notices.create', [], false) }}" class="btn btn-success">新增</a>
     </div>
   </div>
 </div>

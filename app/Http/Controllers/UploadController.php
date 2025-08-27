@@ -8,13 +8,17 @@ use Illuminate\Support\Str;
 
 class UploadController extends Controller
 {
+    // CKEditor ckfinder 上傳：回傳 { uploaded:1, url, fileName }
     public function ck(Request $request)
     {
         try {
+            // CKEditor 會用 "upload" 這個欄位名稱
             $file = $request->file('upload');
             if (!$file || !$file->isValid()) {
                 throw new \RuntimeException('沒有收到檔案或檔案無效');
             }
+
+            // 你可以放寬或收緊限制（這裡先允許常見圖片/文件、上限 10MB）
             $request->validate([
                 'upload' => 'file|max:20480|mimetypes:
                     image/jpeg,image/png,image/gif,image/webp,
@@ -26,6 +30,8 @@ class UploadController extends Controller
                     text/plain,application/octet-stream'
             ]);
 
+
+            // 儲存到 storage/app/public/notice-uploads/YYYY/MM
             $dir  = 'notice-uploads/' . date('Y/m');
             $ext  = strtolower($file->getClientOriginalExtension());
             $name = Str::random(16) . ($ext ? ('.' . $ext) : '');
@@ -34,7 +40,7 @@ class UploadController extends Controller
             return response()->json([
                 'uploaded' => 1,
                 'fileName' => $file->getClientOriginalName(),
-                'url'      => asset('storage/' . $path),
+                'url'      => asset('storage/' . $path), // 前端插入這個 URL
             ]);
         } catch (\Throwable $e) {
             return response()->json([

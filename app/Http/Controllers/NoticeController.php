@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class NoticeController extends Controller
 {
+    // 列表 + 分頁 + 簡單搜尋（標題／公布者）
     public function index(Request $request)
     {
         $q = $request->input('q');
@@ -21,6 +22,8 @@ class NoticeController extends Controller
 
         return view('notices.index', compact('notices', 'q'));
     }
+
+    // 顯示單筆（可閱讀內容）
     public function show(Notice $notice)
     {
         return view('notices.show', compact('notice'));
@@ -30,26 +33,29 @@ class NoticeController extends Controller
     public function create()
     {
         $notice = new Notice([
-            'author'       => 'Administrator',
+            'author'       => 'Administrator',               // 目前固定
             'published_at' => now()->toDateString(),
         ]);
         return view('notices.create', compact('notice'));
     }
 
+    // 新增處理
     public function store(Request $request)
     {
         $data = $this->validateData($request);
-        $data['author'] = 'Administrator';
+        $data['author'] = 'Administrator';                  // 後端強制，避免被竄改
 
         Notice::create($data);
         return redirect()->route('notices.index')->with('ok', '已新增公告');
     }
 
+    // 編輯頁
     public function edit(Notice $notice)
     {
         return view('notices.edit', compact('notice'));
     }
 
+    // 更新處理
     public function update(Request $request, Notice $notice)
     {
         $data = $this->validateData($request);
@@ -59,6 +65,7 @@ class NoticeController extends Controller
         return redirect()->route('notices.index')->with('ok', '已更新公告');
     }
 
+    // 刪除
     public function destroy(Notice $notice)
     {
         $notice->delete();

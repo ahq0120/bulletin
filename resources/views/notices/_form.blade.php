@@ -46,10 +46,13 @@
     let editor;
 
     ClassicEditor.create(document.querySelector('#content'), {
-      ckfinder: { uploadUrl: '/uploads/ck' }
+      // 圖片上傳仍走 ckfinder（你已設定的 uploads.ck）
+      ckfinder: { uploadUrl: "{{ route('uploads.ck', [], false) }}" }
     })
     .then(ed => {
       editor = ed;
+
+      // 附件按鈕：選檔
       const btn = document.getElementById('btnUploadAttachment');
       const input = document.getElementById('attachmentInput');
 
@@ -76,10 +79,11 @@
               throw new Error(msg);
             }
 
+            // 成功：把「檔名」當連結文字插入到游標處
             editor.model.change(writer => {
               const text = writer.createText(data.fileName || file.name, { linkHref: data.url });
               editor.model.insertContent(text, editor.model.document.selection);
-
+              // 插入一個空格，使用者好接著輸入
               editor.model.insertContent(writer.createText(' '), editor.model.document.selection);
             });
 
@@ -88,7 +92,7 @@
           }
         }
 
-        input.value = '';
+        input.value = ''; // 清空，避免同檔無法重選
       });
     })
     .catch(console.error);
