@@ -1,61 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Bulletin
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+簡單的 **公告（Notices）系統**：支援 CRUD、CKEditor 富文字編輯與圖片/附件上傳；列表 **每頁 10 筆**，並支援關鍵字搜尋。內容以 HTML 儲存，媒體檔案使用 Laravel public 磁碟並以 **`/storage/...` 相對路徑** 提供。
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 功能（Features）
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 公告 CRUD：標題、公布者（固定 `Administrator`）、公布日期、截止日期、內容（HTML）
+- 富文字編輯：CKEditor 5（Classic build）
+- 圖片／附件上傳：前端 POST 至 `/uploads/ck`，回傳 URL 直接插入 CKEditor
+- 列表分頁：每頁 10 筆（`?page=`）
+- 簡易搜尋：`?q=`（針對標題 / 公布者模糊查詢）
+- 媒體公開路徑：`/storage/notice-uploads/YYYY/MM/...`（相對路徑，避免入口網域/埠號變更後失效）
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 技術棧（Tech Stack）
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Laravel 10/11、PHP 8.1+
+- MySQL 8 或 MariaDB 10.x（皆可）
+- 前端：CKEditor 5、Bootstrap 5
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 專案結構（重點）
 
-## Laravel Sponsors
+app/
+  Http/Controllers/
+    NoticeController.php      # 列表/搜尋/分頁/CRUD
+    UploadController.php      # CKEditor 圖片/附件上傳端點
+  Models/Notice.php
+database/
+  migrations/*_create_notices_table.php
+resources/views/notices/
+  index.blade.php             # 列表 + 搜尋 + 分頁（10 筆/頁）
+  _form.blade.php             # 表單 + CKEditor +「上傳附件並插入連結」
+  create.blade.php / edit.blade.php / show.blade.php
+routes/web.php                # RESTful 路由 + 上傳端點
+public/storage -> storage/app/public   # 由 `php artisan storage:link` 建立
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 路由與 API（Routes & API）
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+RESTful（Route::resource('notices', NoticeController::class)）
+- notices.index   | GET        | /notices                   | 列表（支援 `?q=` 搜尋、`?page=` 分頁）
+- notices.create  | GET        | /notices/create            | 新增表單
+- notices.store   | POST       | /notices                   | 建立
+- notices.show    | GET        | /notices/{notice}          | 檢視
+- notices.edit    | GET        | /notices/{notice}/edit     | 編輯表單
+- notices.update  | PUT/PATCH  | /notices/{notice}          | 更新
+- notices.destroy | DELETE     | /notices/{notice}          | 刪除
 
-## Contributing
+列表搜尋與分頁（index）
+- `?q=keyword`：對 `title` / `author` 進行 LIKE 模糊搜尋
+- `?page=2`：切換頁碼（每頁 10 筆；withQueryString() 會保留查詢參數）
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+上傳端點（CKEditor 5）
+- 方法：POST /uploads/ck
+- 表單欄位：upload=<file>
+- 回應（JSON）：
+  { "uploaded": 1, "fileName": "原檔名.ext", "url": "/storage/notice-uploads/YYYY/MM/隨機檔名.ext" }
 
-## Code of Conduct
+> 回傳 `url` 為 **相對路徑 `/storage/...`**；正式環境請確保 CSRF/CORS 設定妥當。
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 資料庫結構（Database Schema）
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+業務表：notices
+- id            BIGINT UNSIGNED  PK AI        # 主鍵
+- title         VARCHAR(200)     NOT NULL     # 標題
+- author        VARCHAR(100)     NOT NULL     DEFAULT 'Administrator'  # 公布者（固定）
+- published_at  DATE             NOT NULL     # 公布日期
+- due_date      DATE             NULL         # 截止日期
+- content       LONGTEXT         NULL         # CKEditor HTML
+- created_at    TIMESTAMP        NULL
+- updated_at    TIMESTAMP        NULL
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+說明
+- 專案可能同時包含 Laravel 預設/可選系統表（如 `users`、`migrations`、`jobs` 等）；日常 CRUD 僅需關注 `notices`。
