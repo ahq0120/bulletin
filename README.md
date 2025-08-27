@@ -1,7 +1,5 @@
 # Bulletin
 
-簡單的 **公告（Notices）系統**：支援 CRUD、CKEditor 富文字編輯與圖片/附件上傳；列表 **每頁 10 筆**，並支援關鍵字搜尋。內容以 HTML 儲存，媒體檔案使用 Laravel public 磁碟並以 **`/storage/...` 相對路徑** 提供。
-
 ---
 
 ## 功能（Features）
