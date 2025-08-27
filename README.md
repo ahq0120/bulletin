@@ -35,16 +35,19 @@ routes/web.php                # RESTful 路由 + 上傳端點
 
 ---
 
-## Routes 與 API
+## 路由與 API
 
-RESTful（Route::resource('notices', NoticeController::class)）
-- notices.index   | GET        | /notices                   | 列表
-- notices.create  | GET        | /notices/create            | 新增表單
-- notices.store   | POST       | /notices                   | 建立
-- notices.show    | GET        | /notices/{notice}          | 檢視
-- notices.edit    | GET        | /notices/{notice}/edit     | 編輯表單
-- notices.update  | PUT/PATCH  | /notices/{notice}          | 更新
-- notices.destroy | DELETE     | /notices/{notice}          | 刪除
+> 使用 `Route::resource('notices', NoticeController::class)` 產生 RESTful 路由。
+
+| 名稱              | 方法        | 路徑                         | 說明       |
+|-------------------|-------------|------------------------------|------------|
+| `notices.index`   | GET         | `/notices`                   | 列表       |
+| `notices.create`  | GET         | `/notices/create`            | 新增表單   |
+| `notices.store`   | POST        | `/notices`                   | 建立       |
+| `notices.show`    | GET         | `/notices/{notice}`          | 檢視       |
+| `notices.edit`    | GET         | `/notices/{notice}/edit`     | 編輯表單   |
+| `notices.update`  | PUT/PATCH   | `/notices/{notice}`          | 更新       |
+| `notices.destroy` | DELETE      | `/notices/{notice}`          | 刪除       |
 
 ---
 
